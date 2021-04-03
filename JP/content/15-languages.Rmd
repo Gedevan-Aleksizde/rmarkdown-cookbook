@@ -1,8 +1,8 @@
 # その他の言語 {#other-languages}
 
-R Markdown は **knitr** を通して R 言語以外の多くのプログラミング言語をもサポートしています. 言語の名前は3連続のバッククオートの後のカーリーブレースの最初の単語で表現されます. 例えば ```` ```{r}```` の小文字の `r` はコードチャンクに R のコードが含まれていることを意味し, ```` ```{python}```` は Python のコードチャンクであることを表しています. この章ではあなたがあまり詳しくないであろういくつかの言語をお見せします.
+R Markdown は **knitr** を通して R 言語以外の多くのプログラミング言語をもサポートしています. 言語の名前は3連続のバッククオートの後の波カッコ（カーリーブレース）の最初の単語で表現されます. 例えば ```` ```{r}```` の小文字の `r` はコードチャンクに R のコードが含まれていることを意味し, ```` ```{python}```` は Python のコードチャンクであることを表しています. この章ではあまりお馴染みではない言語をいくつかご紹介します.
 
-**knitr** では, どの言語も言語エンジンを通してサポートされています. 言語エンジンは本質的にはソースコードとコードチャンクを入力として, 出力として文字列を返す関数です. これらは `knitr::knit_engines` オブジェクトで管理されています. 既存のエンジンはこのようにして確認することもできます.
+**knitr** では, どの言語も言語エンジンを通してサポートされています. 言語エンジンは本質的にはソースコードとコードチャンクを入力とし, 出力として文字列を返す関数です. これらは `knitr::knit_engines` オブジェクトで管理されています. 既存のエンジンはこのようにして確かめることもできます.
 
 ```{r, eval=FALSE}
 names(knitr::knit_engines$get())
@@ -15,15 +15,15 @@ if (!is.na(i)) engs = head(engs, i - 1)
 engs
 ```
 
-現時点では, R 言語でないほとんどの言語はコードチャンクごとに独立して実行されます. 例えば, 同じ文書内の `bash` コードチャンクは全てそれぞれ別々のセッションで実行されるため, 後の `bash` コードチャンクはそれ以前の `bash` チャンクで作成された変数を使うことができませんし, `cd` による作業ディレクトリの変更も異なる `bash` チャンク間で維持できません. R, Python, そして Julia のコードチャンクのみが同一セッションで実行されます. 全ての R コードチャンクは同一の R セッションで実行され, 全ての Python コードチャンクは同一の Python セッションされ……,  ということに注意してください. R セッションと Python セッションは2つの異なるセッションですが, 一方のセッションからもう一方のセッションのオブジェクトにアクセスしたり操作したりすることは可能です (\@ref(eng-python)節参照).
+現時点では, R 言語でないほとんどの言語はコードチャンクごとに独立して実行されます. 例えば, 同じ文書内の `bash` コードチャンクは全てそれぞれ別々のセッションで実行されるため, 後の `bash` コードチャンクはそれ以前の `bash` チャンクで作成された変数を使うことができませんし, `cd` による作業ディレクトリの変更も異なる `bash` チャンク間で維持できません. R, Python, そして Julia のコードチャンクのみが同一セッションで実行されます. 全ての R コードチャンクは同一の R セッションで実行され, 全ての Python コードチャンクは同一の Python セッションされ……,  ということに注意してください. R セッションと Python セッションは2つの異なるセッションですが, 一方のセッションからもう一方のセッションのオブジェクトにアクセスしたり操作したりすることは可能です (第\@ref(eng-python)節参照).
 
-_R Markdown Definitive Guide_ [@rmarkdown2018] の  [Section 2.7](https://bookdown.org/yihui/rmarkdown/language-engines.html) では Python, シェル, SQL, Rcpp, Stan, JavaScript, CSS, Julia, C そして Fortran のコードを使用する例が紹介されています. この章ではさらなる言語エンジンを紹介します. そしてさらなる例はリポジトリ https://github.com/yihui/knitr-examples で見られます. "engine" という単語を含むファイルを探してください.
+_R Markdown Definitive Guide_ [@rmarkdown2018] の  [Section 2.7](https://bookdown.org/yihui/rmarkdown/language-engines.html) では Python, シェル, SQL, Rcpp, Stan, JavaScript, CSS, Julia, C そして Fortran のコードの使用例が紹介されています. この章ではさらに言語エンジンを紹介します. そしてさらなる例はリポジトリ https://github.com/yihui/knitr-examples で見られます. "engine" という単語を含むファイルを探してください.
 
 初めに, カスタム言語エンジンの登録によってこれがどのように動作するかを解明しましょう.
 
 ## カスタム言語エンジンを登録する (\*) {#custom-engine}
 
-`knitr::knit_engines$set()`\index{knitr!knit\_engines} でカスタム言語エンジン\index{言語エンジン!カスタム}を登録できます. これは関数を入力として受け容れます. これが例です.
+`knitr::knit_engines$set()`\index{knitr!knit\_engines} でカスタム言語エンジン\index{言語エンジン!カスタム}を登録できます. これは入力として関数を受け容れます. これが例です.
 
 ```{r, eval=FALSE}
 knitr::knit_engines$set(foo = function(options) {
@@ -32,9 +32,9 @@ knitr::knit_engines$set(foo = function(options) {
 })
 ```
 
-これは `foot` エンジンを登録し, ```` ```{foo}```` で始まるコードチャンクを使えるようになります.
+これは `foo` エンジンを登録し, ```` ```{foo}```` で始まるコードチャンクを使えるようになります.
 
-エンジン関数は1つの引数 `options` を取り, これはコードチャンクのオプションのリストです. `options$code` にある文字列ベクトルとして, チャンクのソースコードにアクセスできます. 例えば, このコードチャンクに対して考えます.
+エンジン関数は1つの引数 `options` を取りますが, これはコードチャンクのチャンクオプションのリストです. チャンクのソースコードには, `options$code` にある文字列ベクトルとしてアクセスできます. 例えば, このコードチャンクに対して考えます.
 
 ````md
 ```{foo}`r ''`
@@ -45,7 +45,7 @@ knitr::knit_engines$set(foo = function(options) {
 
 `options` の `code` 要素は文字列ベクトル `c('1 + 1', '2 + 2')` になります.
 
-言語エンジンは実はプログラミング言語として動作しなくてもよいですが, コードチャンクの任意のテキストを処理できます. まずは, コードチャンクの本文を大文字に変換するエンジンの例をお見せします.
+言語エンジンが扱うのは実はプログラミング言語だけではなく, コードチャンクのどのようなテキストも処理できます. まずは, コードチャンクの本文を大文字に変換する簡単なエンジンの例をお見せします.
 
 ```{r}
 knitr::knit_engines$set(upper = function(options) {
@@ -54,7 +54,7 @@ knitr::knit_engines$set(upper = function(options) {
 })
 ```
 
-ポイントは `toupper` 関数を「コード」に適用して, `\n` でコードの全ての行を連結し, 単一の文字列として結果を返すことです. `toupper()` はチャンクオプション `eval = TRUE`\index{チャンクオプション!eval}の時にのみ適用され, そうでなければ元の文字列が返されることに注意してください.  このことは `eval` のようなチャンクオプションをエンジン関数内で利用する方法を示唆しています. 同様に, `results = 'hide'`\index{チャンクオプション!results} の時に出力を隠すため, 関数内に `if (options$results == 'hide') return()` を加えることも検討することもできます. 以下は `upper` エンジンをオプションとともに使用するチャンクの例です.
+ポイントは `toupper` 関数を「コード」に適用して, `\n` でコードの全ての行を連結し, 単一の文字列として結果を返すことです. `toupper()` はチャンクオプションが `eval = TRUE`\index{チャンクオプション!eval}の時にのみ適用され, そうでないときは元の文字列が返されることに注意してください.  これは `eval` のようなチャンクオプションをエンジン関数内で利用する方法があることを示唆しています. 同様に, `results = 'hide'`\index{チャンクオプション!results} の時に出力を隠すため, 関数内に `if (options$results == 'hide') return()` を加えることも考慮できます. 以下は `upper` エンジンをオプションとともに使用するチャンクの例です.
 
 > ````md
 > ```{upper}`r ''`
@@ -66,7 +66,7 @@ knitr::knit_engines$set(upper = function(options) {
 > Hello, **knitr** engines!
 > ```
 
-次に, `py` という名前のもう1つの Python エンジン^[実用的には組み込みの `python` エンジンをを使うべきです. これは **reticulate** パッケージに基づいており, より良く Python コードチャンクをサポートしてくれます (\@ref(eng-python)節参照).]の例を紹介します. このエンジンは単純に R の `system2()` 関数から `python` コマンドを呼び出すことで実装しています.
+次に, `py` という名前のついたもう1つの Python エンジン^[実用的には組み込みの `python` エンジンをを使うべきです. これは **reticulate** パッケージに基づいており, より良く Python コードチャンクをサポートしてくれます (第\@ref(eng-python)節参照).]の例を紹介します. このエンジンは単純に R の `system2()` 関数から `python` コマンドを呼び出すことで実装しています.
 
 ```{r, tidy=FALSE}
 knitr::knit_engines$set(py = function(options) {
@@ -78,15 +78,15 @@ knitr::knit_engines$set(py = function(options) {
 })
 ```
 
-上記のエンジン関数を完全に理解するために, 以下を知っておく必要があります.
+上記のエンジン関数を完全に理解するためには, 以下のことを知っておく必要があります.
 
 1. Python コードは文字列として与えられ (上記関数の `code`), コードはコマンドラインの呼び出し `python -c 'code'` によって実行できます. これが `system2()` のしていることです. `system2()` `stdout = TRUE` を指定することでテキスト出力を収集しています.
 
-1. 最終的な出力を生成するため, チャンクオプション・ソースコード・テキスト出力を `knitr::engine_output()`\index{knitr!engine\_output()} 関数に与えることができます. この関数は `echo = FALSE` と `results = 'hide'` のようなよく使うオプションを処理します. よってあなたはこれらの場合に注意する必要はありません.
+1. チャンクオプション・ソースコード・テキスト出力を `knitr::engine_output()`\index{knitr!engine\_output()} 関数に与えて, 最終的な出力を生成しています. この関数は `echo = FALSE` と `results = 'hide'` のようなよく使うオプションを処理します. よってあなたはこれらの場合に注意する必要はありません.
 
-**knitr** の多くの言語エンジンはこのようにして定義されています. つまり `system2()` を使って言語に対応するコマンドを実行してます. もし技術的に詳しい話に興味があるなら, R ソースコードにはほとんどの言語エンジンが書かれているここ https://github.com/yihui/knitr/blob/master/R/engine.R を確認することもできます.
+**knitr** の多くの言語エンジンはこのようにして定義されています. つまり `system2()` を使って言語に対応するコマンドを実行してます. もし技術的に詳しい話に興味があるなら, R ソースコードに書かれているほとんどの言語エンジンのソースコードをこちら https://github.com/yihui/knitr/blob/master/R/engine.R で確かめられます.
 
-そして今や, 新しいエンジン `py` を使うことができます. 例えばこのように.
+そして今や, 新しいエンジン `py` を使えるようになりました. 例えばこのように.
 
 > ````md
 > ```{py}`r ''`
@@ -98,13 +98,13 @@ knitr::knit_engines$set(py = function(options) {
 > print(1 + 1)
 > ```
 
-あなたのバージョンの言語エンジンが **knitr**  の既存の言語エンジンよりも必要性がるか, より良いものだと確信しているなら, `knitr::knit_engines$set()` によって既存のものを上書きすることすらできます. たいていの場合は既存のエンジンに慣れたユーザーが驚いてしまうかもしれないので, そうすることはお薦めしませんが, どちらにせよこの可能性は頭の片隅に置いてほしいです.
+あなたのバージョンの言語エンジンが必要なときや **knitr**  の既存の言語エンジンよりも改良されていると確信できるなら, `knitr::knit_engines$set()` によって既存のエンジンを上書きすることすらできます. たいていの場合は既存のエンジンに慣れたユーザーが驚いてしまうかもしれないので, そうすることはお薦めしませんが, どちらにせよこの可能性は頭の片隅に置いてほしいです.
 
 ## Python コードの実行と双方向処理 {#eng-python}
 
-あなたが Python を好んでいることは知っていますので, とてもはっきりと言ってしまいましょう. R Markdown と **knitr** はなんと Python\index{言語エンジン!python}\index{Python} をサポートしています.
+Python 大好きな方のために, この際はっきりと言ってしまいましょう. R Markdown と **knitr** はなんと Python\index{言語エンジン!python}\index{Python} をサポートしています.
 
-Python のコードチャンクを R Markdown 文書に加えるには チャンクヘッダ ``` ```{python}```` を使うことができます. 例えばこのように.
+Python のコードチャンクを R Markdown 文書に加えるには チャンクヘッダ ```` ```{python}```` を使えばいいのです. 例えばこのように.
 
 ````md
 ```{python}`r ''`
@@ -114,15 +114,15 @@ print("Hello Python!")
 
 いつもどおりにチャンクヘッダに `echo = FALSE` or `eval = FALSE` といったチャンクオプションを追加することができます. Python の **matplotlib** パッケージで描かれたグラフもサポートしています.
 
-R Markdown と **knitr** の Python サポートは **reticulate** パッケージ\index{R パッケージ!reticulate} [@R-reticulate] に基づいており, このパッケージの重要な機能の1つは Python と R の双方向的なコミュニケーションを可能にすることです. 例えば **reticulate** の `py` オブジェクトを介して R セッションから Python の変数にアクセスしたり作成したりすることもできます.
+R Markdown と **knitr** の Python サポートは **reticulate** パッケージ\index{R パッケージ!reticulate} [@R-reticulate] に基づいていますが, このパッケージのもう一つ重要な機能は Python と R の双方向的なコミュニケーションを可能にすることです. 例えば **reticulate** の `py` オブジェクトを介して R セッションから Python の変数にアクセスしたり作成したりできます.
 
 `r import_example('python.Rmd')`
 
-**reticulate** パッケージに関する詳細については, https://rstudio.github.io/reticulate/ のドキュメントを見ることもできます.
+**reticulate** パッケージに関する詳細については, https://rstudio.github.io/reticulate/ のドキュメントを見てください.
 
 ## `asis` エンジンでコンテンツを条件付きで実行する Execute content conditionally via the `asis` engine {#eng-asis}
 
-その名が示すとおり, `asis` エンジン\index{言語エンジン!asis}はチャンクの内容をそのまま書き出します. このエンジンを使う利点は条件に応じてコンテンツを読み込めることです. つまりチャンクオプション `echo` によりチャンクの内容の表示を決定します. `echo = FALSE` の時はチャンクは隠されます. 以下は簡単な例です.
+`asis` エンジン\index{言語エンジン!asis}はその名が示すとおり, チャンクの内容をそのまま書き出します. このエンジンを使う利点は条件に応じてコンテンツを読み込めることです. つまりチャンクオプション `echo` によりチャンク内容の表示の可否を決定します. `echo = FALSE` の時はチャンクは隠されます. 以下は簡単な例です.
 
 ````md
 ```{r}`r ''`
@@ -136,17 +136,17 @@ https://xkcd.com/221/ によれば, **真の**乱数を生成しました!
 ```
 ````
 
-`asis` チャンク内のテキストは条件式 `getRandomNumber() == 4` が (ランダムに) 真であるならば表示されます.
+`asis` チャンク内のテキストは条件式 `getRandomNumber() == 4` が (ランダムに) 真のときだけ表示されます.
 
 ## シェルスクリプトを実行する {#eng-bash}
 
-あなたが好んでいるシェルに応じて, `bash` ・ `sh` ・ `zsh` エンジン\index{言語エンジン!bash}\index{言語エンジン!sh}\index{言語エンジン!zsh}でシェルスクリプトを実行できます. 以下はチャンクヘッダ ```` ```{bash}```` を使った `bash` の例です.
+お好みのシェルに応じて, `bash` ・ `sh` ・ `zsh` エンジン\index{言語エンジン!bash}\index{言語エンジン!sh}\index{言語エンジン!zsh}でシェルスクリプトを実行できます. 以下はチャンクヘッダ ```` ```{bash}```` を使った `bash` の例です.
 
 ```{bash}
 ls *.Rmd | head -n 5
 ```
 
-`bash` は R の `system2()` 関数で呼び出されていることに注意してください. `~/.bash_profile` や `~/.bash_login` のようなプロファイルにある, あなたの定義したコマンドのエイリアスや `PATH` などの環境変数は無視されます. ターミナル上でシェルを使っている時のようにこれらのプロファイルがほしいなら, `engine.opts` を介して `-l` 引数を与えることもできます. これが例です.
+`bash` は R の `system2()` 関数で呼び出されていることに注意してください. `~/.bash_profile` や `~/.bash_login` のようなプロファイルにある, あなたの定義したコマンドのエイリアスや `PATH` などの環境変数は無視されます. ターミナル上でシェルを使っている時のようにこれらのプロファイルを実行したいなら, `bash` に `engine.opts` を介して `-l` 引数を与えればよいのです. これが例です.
 
 ````md
 ```{bash, engine.opts='-l'}`r ''`
@@ -154,23 +154,23 @@ echo $PATH
 ```
 ````
 
-`-l` 引数を全ての `bash` チャンクで有効にしたいなら, 文書の冒頭でグローバルチャンクオプションに設定することもできます.
+`-l` 引数を全ての `bash` チャンクで有効にしたければ, 文書の冒頭でグローバルチャンクオプションに設定すればいいでしょう.
 
 ```{r, eval=FALSE}
 knitr::opts_chunk$set(engine.opts = list(bash = '-l'))
 ```
 
-チャンクオプション `engine.opts`\index{チャンクオプション!engine.opts} に文字列ベクトルとして他の引数を `bash` に与えることもできます.
+他の引数を `bash` に渡すには, チャンクオプション `engine.opts`\index{チャンクオプション!engine.opts} に文字列ベクトルとして与えればできます.
 
 ## D3 で可視化する {#d3}
 
-R のパッケージ **r2d3** [@R-r2d3]\index{R パッケージ!r2d3} は D3 可視化のインターフェースです. このパッケージは例えば Shiny のような他のアプリケーションと同様に R Markdown 文書内で使うことができます. R Markdown 内で使うにはコードチャンクで `r2d3()` 関数を呼び出すか, `d3` エンジンindex{言語!D3}\index{D3}\index{図!D3}を使用することができます. 後者は D3 ライブラリと Javascript の理解が要求されますが, それは本書で扱う範囲を超えますので, 読者自身による学習に任せます. 以下は `d3` エンジンで棒グラフを描く例です.
+R のパッケージ **r2d3** [@R-r2d3]\index{R パッケージ!r2d3} は D3 可視化のインターフェースです. このパッケージは例えば Shiny のような他のアプリケーションと同様に R Markdown 文書内で使うことができます. R Markdown 内で使うには, コードチャンクで `r2d3()` 関数を呼び出すか, `d3` エンジン\index{言語!D3}\index{D3}\index{図!D3}を使います. 後者は D3 ライブラリと Javascript の理解が要求されますが, それは本書で扱う範囲を超えますので, 読者自身による学習に任せます. 以下は `d3` エンジンで棒グラフを描く例です.
 
 `r import_example('d3.Rmd')`
 
 ## `cat` エンジンでチャンクをファイルに書き出す {#eng-cat}
 
-コードチャンクの内容を外部ファイルに書き出し, 以降の他のコードチャンクで使用するのは時には有用である可能性があります. もちろん, `writeLines()` のような R の関数で行っても良いですが, 内容が比較的長かったり, 特殊な文字が含まれていたり, `writeLines()` に渡したい文字列がごちゃごちゃしたりしているかもしれません. 以下は 長い文字列を `my-file.txt` に書き出す例です.
+コードチャンクの内容を外部ファイルに書き出して, あとから他のコードチャンクで使えるのは, 便利なときがあります. もちろん, `writeLines()` のような R の関数で行っても良いですが, 内容が比較的長かったり, 特殊な文字が含まれていたり, `writeLines()` に渡したい文字列がごちゃごちゃしたりしているかもしれません. 以下は 長い文字列を `my-file.txt` に書き出す例です.
 
 ```{r, eval=FALSE}
 writeLines("これは長い文字列です.
@@ -183,9 +183,9 @@ writeLines("これは長い文字列です.
 con = "my-file.txt")
 ```
 
-R 4.0.0 以降では `r"()"` 内での生の文字列 (`?Quotes` のヘルプ参照) がサポートされ始めたので, 特殊文字のルールを全て覚える必要はなくなり, この問題は大いに緩和されました. 生の文字列があってもなお, チャンク内で長い文字列を明示的にファイルに書き出すことは読者の注意力を少しばかり削ぐ可能性があります.
+R 4.0.0 以降では `r"()"` 内での生の文字列 (`?Quotes` のヘルプ参照) がサポートされるようになったので, 特殊文字のルールを全て覚える必要はなくなり, この問題は大いに緩和されました. しかし生の文字列が使えるにしてもなお, ファイルに書き出すべき長い文字列をチャンク内で明示することは, 読者の注意力を少しばかり削ぎかねません.
 
-**knitr** の `cat` エンジン\index{言語エンジン!cat}は, 例えばバックスラッシュのリテラルが必要な時は, 二重バックスラッシュが必要といった, R の文字列ルールを一切考えることなく, コードチャンクの内容の表示かつ/または外部ファイルへの書き出しの方法を提供してくれます.
+**knitr** の `cat` エンジン\index{言語エンジン!cat}は, コードチャンクのテキスト内容を表示したり外部ファイルへの書き出しの手段を提供しているので, 例えばバックスラッシュのリテラルが必要な時は二重バックスラッシュが必要といった, R の文字列ルールを一切考えることはありません. 
 
 チャンクの内容をファイルに書き出すには, チャンクオプション `engine.opts`\index{チャンクオプション!engine.opts} にファイルパスを指定してください. 例えば `engine.opts = list(file = 'path/to/file')` のように. この内部では, `engine.opts` で指定された値のリストが `base::cat()` に渡されます. そして `file` は `base::cat()` の引数の1つです.
 
@@ -193,25 +193,25 @@ R 4.0.0 以降では `r"()"` 内での生の文字列 (`?Quotes` のヘルプ参
 
 ### CSS ファイルへ書き込む
 
-\@ref(chunk-styling)節でお見せしたように, 要素を CSS\index{CSS} でスタイル設定するために `css` コードチャンク\index{言語エンジン!css}を Rmd 文書に埋め込むことができます. 別の方法として, カスタム CSS ファイルを, `html_document` のようないくつかの R Markdown 出力フォーマットで有効な `css` オプションを介して Pandoc に渡す方法もあります. `cat` エンジンはこの CSS ファイルを Rmd から書き込むのに使用できます.
+第\@ref(chunk-styling)節でお見せしたように, `css` コードチャンク\index{言語エンジン!css}を Rmd 文書に埋め込むことで, CSS\index{CSS} でスタイル要素を設定できます. 別の方法として, カスタム CSS ファイルを, `html_document` などの R Markdown 出力フォーマットの `css` オプションを介して, Pandoc に渡す方法もあります. `cat` エンジンはこの CSS ファイルを Rmd から書き込むのに使用できます.
 
 以下の例は文書のチャンクから `custom.css` ファイルを生成し, そのファイルパスを `html_document` フォーマットの `ccs` オプションに渡す方法を示しています.
 
 `r import_example("cat-css.Rmd")`
 
-`css` コードチャンクのアプローチとこのアプローチの唯一の違いは, 前者が CSS コードをその場に書き込む, つまりコードチャンクのあるまさにその場所に書き込み, そしてそこは出力文書の `<body>` タグの内側ですが, 後者は CSS を出力文書の `<head>` の領域に書き込みます. 出力文書の見た目に実用上の違いは一切生じません.
+`css` コードチャンクのアプローチとこのアプローチの唯一の違いは, 前者が CSS コードを（コードチャンクのある）その場に書き込むことです. つまり出力文書の `<body>` タグの内側ですが, 後者は CSS を出力文書の `<head>` の領域に書き込みます. 出力文書の見た目に実用上の違いは一切生じません.
 
 ### LaTeX コードをプリアンブルに含める
 
-\@ref(latex-preamble)節では, LaTeX コードをプリアンブルに追加する方法を紹介しました. これには 外部の `.tex` ファイルが必要でした. このファイルもまた Rmd から生成することができます. これがその例です.
+第\@ref(latex-preamble)節では, LaTeX コードをプリアンブルに追加する方法を紹介しました. これには 外部の `.tex` ファイルが必要でした. このファイルもまた Rmd から生成することができます. これがその例です.
 
 `r import_example("cat-latex.Rmd")`
 
-上記の `cat` コードチャンク内の LaTeX コードで, PDF 文書のヘッダとフッタを定義しました. フッタに著者名も表示したいなら, 別の `cat` コードチャンクにオプション `engine.opts = list(file = 'preamble.tex', append = TRUE)` と `code = sprintf('\\fancyfoot[LO,RE]{%s}'` を付けることで `preamble.tex` に著者情報を追加することができます. このチャンクの動作を理解するには, この節の最初の方で紹介した `engine.opts` が `base::cat()` に渡されるということを思い出してください. つまり `append = TRUE` は `cat()` に渡されます. そして チャンクオプション `code` はこの後の\@ref(option-code)節を読めば理解できるでしょう.
+上記の `cat` コードチャンク内の LaTeX コードで, PDF 文書のヘッダとフッタを定義しました. フッタに著者名も表示したいなら, 別の `cat` コードチャンクにオプション `engine.opts = list(file = 'preamble.tex', append = TRUE)` と `code = sprintf('\\fancyfoot[LO,RE]{%s}', rmarkdown::metadata$author)` を付けることで `preamble.tex` に著者情報を追加できます. このチャンクの動作を理解するには, この節の最初の方で紹介した `engine.opts` が `base::cat()` に渡されるということを思い出してください. つまり `append = TRUE` は `cat()` に渡されます. そして チャンクオプション `code` は第\@ref(option-code)節を読めば理解できるでしょう.
 
 ### YAML データをファイルに書き込みつつ表示する
 
-`cat` コードチャンクの中身はデフォルトでは出力文書に表示されません. 中身を書き出した後で表示もしたいならば,  チャンクオプション `class.source` に言語名を指定してください. 言語名はシンタックスハイライトに使われます. 以下の例では, 言語名を `yaml` に指定しています.
+`cat` コードチャンクの中身はデフォルトでは出力文書に表示されません. 中身を書き出した後で表示もしたいならば,  チャンクオプション `class.source` に言語名を指定してください. 言語名は構文をハイライトするのに使われます. 以下の例では, 言語名を `yaml` に指定しています.
 
 ````md
 ```{cat, engine.opts=list(file='demo.yml'), class.source='yaml'}`r ''`
@@ -235,7 +235,7 @@ b:
   bb: 2
 ```
 
-ファイル `demo.yml` が実際に生成されたことを示すには, **yaml** パッケージ [@R-yaml] で読み込んでみることができます.
+ファイル `demo.yml` が実際に生成されたことを示すには, **yaml** パッケージ [@R-yaml] で読み込んでみればわかります.
 
 ```{r}
 xfun::tree(yaml::read_yaml('demo.yml'))
@@ -247,7 +247,7 @@ unlink('demo.yml')
 
 ## SAS コードを実行する {#eng-sas}
 
-あなたは `sas` エンジン\index{言語エンジン!SAS} で SAS (https://www.sas.com) を実行するかもしれません. あなたの環境変数 `PATH` に SAS の実行ファイルがあることを確認するか, (`PATH` の意味を知らないなら) チャンクオプション `engine.path`\index{チャンクオプション!engine.path} に実行ファイルのフルパスを与える必要があります. 例えば `engine.path = "C:\\Program Files\\SASHome\\x86\\SASFoundation\\9.3\\sas.exe"` のように. 以下は "Hello World" を表示する例です.
+`sas` エンジン\index{言語エンジン!SAS} で SAS (https://www.sas.com) を実行することもできます. 環境変数 `PATH` に SAS の実行ファイルがあることを確認するか, (`PATH` の意味を知らないなら) チャンクオプション `engine.path`\index{チャンクオプション!engine.path} に実行ファイルのフルパスを与える必要があります. 例えば `engine.path = "C:\\Program Files\\SASHome\\x86\\SASFoundation\\9.3\\sas.exe"` のように. 以下は "Hello World" を表示する例です.
 
 ````md
 ```{sas}`r ''`
@@ -268,7 +268,7 @@ summarize
 ```
 ````
 
-**knitr** の `stata` エンジンの機能はかなり限定的です. Doug Hemken が **Statamarkdown** パッケージ\index{R パッケージ!Statamarkdown}でこれを実質的に拡張しており, GitHub の https://github.com/Hemken/Statamarkdown で利用可能です. "Stata R Markdown" でオンライン検索することでパッケージのチュートリアルを見つけられるでしょう.
+**knitr** の `stata` エンジンの機能はかなり限定的です. Doug Hemken が **Statamarkdown** パッケージ\index{R パッケージ!Statamarkdown}でこれを大きく拡張しており, GitHub の https://github.com/Hemken/Statamarkdown で利用可能です. "Stata R Markdown" でオンライン検索することでパッケージのチュートリアルを見つけられるでしょう.
 
 ## Asymptote でグラフィックを作成する {#eng-asy}
 
@@ -313,13 +313,13 @@ PDF 出力に対しては追加の LaTeX パッケージが必要であること
 ! LaTeX Error: File `ocgbase.sty' not found.
 ```
 
-このようなエラーが発生したなら, 欠けている LaTeX パッケージのインストール方法を\@ref(install-latex-pkgs)節で確認してください.
+このようなエラーが発生したときは, 第\@ref(install-latex-pkgs)節で, 欠けている LaTeX パッケージのインストール方法を確認してください.
 
 上記の `asy` チャンクでは, `settings.prc = false` という設定を使いました. この設定がないと Asymptote は PDF 出力時にインタラクティブな 3D グラフィックを表示してしまいます. しかしインタラクティブなグラフィックは Acrobat Reader でのみ見ることができます. Acrobat Reader を使用しているなら, グラフを操作できます. 例えば図\@ref(fig:elevation)ではマウス操作で3D平面を回転できます.
 
 ### R でデータを生成し Asymptote に読み込ませる
 
-ここでは, 最初に以下の R コードチャンクのように, R で生成したデータを CSV ファイルに保存します.
+まずは, 以下の R コードチャンクのように, R で生成したデータを CSV ファイルに保存します.
 
 ```{r}
 x = seq(0, 5, l = 100)
@@ -327,7 +327,7 @@ y = sin(x)
 writeLines(paste(x, y, sep = ','), 'sine.csv')
 ```
 
-それから Asymptote でこれを読み込み, データに基づいたグラフを描画し図\@ref(fig:sine-curve) に示します. 以下が `asy` コードチャンクです.
+つぎに Asymptote でこれを読み込み, データに基づいたグラフを描画し図\@ref(fig:sine-curve) に示します. 以下が `asy` コードチャンクです.
 
 ```{asy, sine-curve, fig.cap='R からデータを渡し Asymptote でグラフを描く', cache=TRUE, fig.retina=1, eval=eval_asy()}
 import graph;
@@ -360,9 +360,9 @@ unlink('sine.csv')
 
 ## Sass/SCSS で HTML ページをスタイリングする {#eng-sass}
 
-Sass (https://sass-lang.com) は CSS を拡張した言語\index{CSS!Sass}\index{Sass}で, 基本的な CSS で行っていた のよりはるかに柔軟な方法でルールを作成できます. これを学ぶことに関心があるなら, 公式ドキュメントを見てください.
+Sass (https://sass-lang.com) は CSS を拡張した言語\index{CSS!Sass}\index{Sass}で, 素の CSS よりはるかに柔軟な方法で CSS ルールを作成できます. これを学ぶことに関心があるなら, 公式ドキュメントを見てください.
 
-R パッケージの **sass** [@R-sass] \index{R パッケージ!sass} は SaSS を CSS にコンパイルするのに使用できます. **sass** パッケージに基づいて, **knitr** はコードチャンクを CSS にコンパイルするため2つの言語エンジン,  `sass`\index{言語エンジン!sass} and `scss`\index{言語エンジン!scss} を読み込みます. Sass と SCSS の構文は互いに対応しているためです. 以下はチャンクヘッダが  ```` ```{scss}```` である `scss` コードチャンクです.
+R パッケージの **sass** [@R-sass] \index{R パッケージ!sass} は SaSS を CSS にコンパイルするのに使用できます. **sass** パッケージに基づいて, **knitr** はコードチャンクを CSS にコンパイルするため2つの言語エンジン,  `sass`\index{言語エンジン!sass} and `scss`\index{言語エンジン!scss} をそれぞれの構文に対応させて読み込みます. 以下はチャンクヘッダが  ```` ```{scss}```` である `scss` コードチャンクです.
 
 ```{scss}
 $font-stack: "HGS創英角ﾎﾟｯﾌﾟ体", "Comic Sans MS", cursive, sans-serif;
@@ -387,6 +387,6 @@ $primary-color: #00FF00
 ```
 ````
 
-あなたが[このセクションの HTML 版](https://bookdown.org/yihui/rmarkdown-cookbook/eng-sass.html)を読んでいるなら, このページのフォントが Comic Sans に変化したことに気付くでしょう. これには驚いたかもしれませんが, パニックにならないでください, [あなたは脳卒中になどなっていません](https://twitter.com/andrewheiss/status/1250438044542361600).
+あなたが[このセクションの HTML 版](https://bookdown.org/yihui/rmarkdown-cookbook/eng-sass.html)を読んでいるなら, このページのフォントが Comic Sans に変わっていることに気付くでしょう. これには驚いたかもしれませんが, パニックにならないでください, [あなたは脳卒中になどなっていません](https://twitter.com/andrewheiss/status/1250438044542361600).
 
 `sass`/`scss` コードチャンクは `sass::sass()` 関数によってコンパイルされます. 現在はチャンクオプション `engine.opts` で CSS コードの出力スタイルをカスタマイズできます. 例えば `engine.opts = list(style = "expanded")` のように. デフォルトのスタイルは "compressed" です. これが何を意味するのか自信がないなら, `?sass::sass_options` のヘルプを参照し, `output_style` 引数の項目を探してください.
